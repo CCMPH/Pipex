@@ -1,5 +1,6 @@
 # Self Chosen
 .DS_Store
+.git*
 
 # Prerequisites
 *.d
