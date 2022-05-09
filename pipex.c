@@ -33,4 +33,6 @@ int	main(int ac, char **av, char **envp)
 
 // https://www.youtube.com/watch?v=6xbLgZpOBi8
 // https://github.com/gabcollet/pipex/blob/master/srcs/pipex.c
+// https://github.com/mcombeau/pipex
+// https://www.codequoi.com/en/pipex-reproducing-the-pipe-operator-in-c/
 // https://csnotes.medium.com/pipex-tutorial-42-project-4469f5dd5901
