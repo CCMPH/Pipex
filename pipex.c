@@ -6,29 +6,51 @@
 /*   By: chartema <chartema@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/05/04 13:30:31 by chartema      #+#    #+#                 */
-/*   Updated: 2022/05/06 14:37:19 by chartema      ########   odam.nl         */
+/*   Updated: 2022/05/23 15:27:40 by chartema      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "pipex.h"
 #include <fcntl.h> // nodig voor open
+#include <stdlib.h> //nodig voor malloc
+#include <stdio.h> //nodig voor printf
+#include <unistd.h> //nodig voor pipe
 
-int	pipex(int input_file, int output_file, char **av, char **envp)
+int	pipex(t_list *data)
 {
+	int	exit_code;
+	int	*pipefd;
 
+	exit_code = 0;
+	printf("kom ik hier2?\n");
+	pipefd = malloc((2 * (data->size - 1)) * sizeof(int));
+	if (!pipefd)
+		//ERROR
+	if (pipe(pipefd + 2) < 0)
+		//ERROR
+	printf("kom ik hier?\n");
+	return (exit_code);
 }
 
 int	main(int ac, char **av, char **envp)
 {
-	int	input_file;
-	int	output_file;
+	t_list	data;
+	int		exit_code;
 
-	input_file = open(av[1], O_RDONLY);
-	output_file = open(av[4], O_CREAT | O_RDWR | O_TRUNC, 0644);
-	if (input_file < 0 || output_file < 0 || ac != 5)
+	printf("kom ik hier?\n");
+	data.input_fd = open(av[1], O_RDONLY);
+	data.output_fd = open(av[ac - 1], O_CREAT | O_RDWR | O_TRUNC, 0644);
+	if (data.input_fd < 0 || data.output_fd < 0 || ac != 5)
 		// moet er een error tekst als input anders is dan 5?
-		return ();
-	pipex(input_file, output_file, av, envp);
-	return (0);
+		printf("kom ik hier58?\n");
+		// hij klapt er hier uit, maar waarom??
+		return (1);
+	data.envp = envp;
+	data.av = av;
+	data.size = ac - 3;
+	printf("kom ik hier?\n");
+	exit_code = pipex(&data);
+	return (exit_code);
 }
 
 // https://www.youtube.com/watch?v=6xbLgZpOBi8
