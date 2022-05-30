@@ -13,13 +13,4 @@
 #ifndef PIPEX_H
 # define PIPEX_H
 
-typedef struct s_list
-{
-	int		input_fd;
-	int		output_fd;
-	int		size;
-	char	**envp;
-	char	**av;
-}	t_list;
-
 #endif

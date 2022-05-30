@@ -16,45 +16,60 @@
 #include <stdio.h> //nodig voor printf
 #include <unistd.h> //nodig voor pipe
 
-int	pipex(t_list *data)
+void	child_process(char **av, char **envp, int *pipe_end)
 {
-	int	exit_code;
-	int	*pipefd;
+	int	fd_input;
 
-	exit_code = 0;
-	printf("kom ik hier2?\n");
-	pipefd = malloc((2 * (data->size - 1)) * sizeof(int));
-	if (!pipefd)
+	fd_input = open(av[1], O_RDONLY);
+	if (fd_input == -1)
 		//ERROR
-	if (pipe(pipefd + 2) < 0)
+	if (dup2(fd_input, STDIN_FILENO) < 0 || dup2(pipe_end[1], STDOUT_FILENO) < 0)
 		//ERROR
-	printf("kom ik hier?\n");
-	return (exit_code);
+	close(pipe_end[0]);
+	close(fd_input); // is dit nodig of overbodig?
+	execute(av[2], envp);
+}
+
+void	parent_process(char **av, char **envp, int *pipe_end)
+{
+	int	fd_output;
+
+	fd_output = open(av[4], O_RDWR | O_CREAT | O_TRUNC, 0644);
+	// soorten opzoeken en opschrijven
+	if (fd_output == -1)
+		//ERROR
+	if (dup2(pipe_end[0], STDIN_FILENO) < 0 || dup2(fd_output, STDOUT_FILENO) < 0)
+		//ERROR
+	close(pipe_end[1]);
+	close(fd_output); // is dit nodig of overbodig?
+	execute(av[3], envp);
 }
 
 int	main(int ac, char **av, char **envp)
 {
-	t_list	data;
-	int		exit_code;
+	int		pipe_end[2];
+	pid_t	pid1;
 
-	printf("kom ik hier?\n");
-	data.input_fd = open(av[1], O_RDONLY);
-	data.output_fd = open(av[ac - 1], O_CREAT | O_RDWR | O_TRUNC, 0644);
-	if (data.input_fd < 0 || data.output_fd < 0 || ac != 5)
-		// moet er een error tekst als input anders is dan 5?
-		printf("kom ik hier58?\n");
-		// hij klapt er hier uit, maar waarom??
-		return (1);
-	data.envp = envp;
-	data.av = av;
-	data.size = ac - 3;
-	printf("kom ik hier?\n");
-	exit_code = pipex(&data);
-	return (exit_code);
+	if (argc == 5)
+	{
+		if (pipe(fd) == -1)
+			//ERROR
+		pid1 = fork();
+		if (pid1 == -1)
+			//ERROR
+		if (pid1 == 0)
+			child_process(av, envp, pipe_end);
+		waitpid(pid1, NULL, 0);
+		parent_process(av, envp, pipe_end);
+	}
+	else
+		// ERROR MANAGEMENT
+	return (0);
 }
 
 // https://www.youtube.com/watch?v=6xbLgZpOBi8
 // https://github.com/gabcollet/pipex/blob/master/srcs/pipex.c
+// https://github.com/gabcollet/pipex/tree/master/srcs
 // https://github.com/mcombeau/pipex
 // https://www.codequoi.com/en/pipex-reproducing-the-pipe-operator-in-c/
 // https://csnotes.medium.com/pipex-tutorial-42-project-4469f5dd5901
