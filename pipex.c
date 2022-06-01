@@ -15,6 +15,8 @@
 #include <stdlib.h> //nodig voor malloc
 #include <stdio.h> //nodig voor printf en perror
 #include <unistd.h> //nodig voor pipe
+#include <sys/types.h> //nodig voor waitpid
+#include <sys/wait.h> //nodig voor waitpid
 
 void	ft_error(void)
 {
@@ -22,14 +24,59 @@ void	ft_error(void)
 	exit(EXIT_FAILURE);
 }
 
+char	*find_path(char *cmd, char **envp)
+{
+	char	**paths;
+	char	*part_path;
+	int		i;
+	char	*cmd_path;
+
+	i = 0;
+	while (ft_strnstr(envp[i], "PATH", 4) == 0)
+		i++;
+	paths = ft_split(envp[i] + 5, ':');
+	i = 0;
+	while (paths[i])
+	{
+		part_path = ft_strjoin(paths[i], "/");
+		cmd_path = ft_strjoin(part_path, cmd);
+		free(part_path);
+		if (access(cmd_path, F_OK | X_OK) == 0)
+			return (cmd_path);
+		free(cmd_path);
+		i++;
+	}
+	while (i >= 0)
+	{
+		free(paths[i]);
+		i--;
+	}
+	free(paths);
+	return (0);
+}
+
 void	execute_cmd(char *av, char **envp)
 {
 	char	**cmd;
+	int		i;
+	char	*path;
 
-	(void) envp;
-
-	printf("wat is av: %s\n", av);
+	i = 0;
 	cmd = ft_split(av, ' ');
+	path = find_path(cmd[0], envp);
+	if (!path)
+	{
+		while (cmd[i])
+		{
+			free(cmd[i]);
+			i++;
+		}
+		free(cmd);
+		ft_error();
+		// Dit is nog niet juiste error
+	}
+	if (execve(path, cmd, envp) == -1)
+		ft_error();
 }
 
 void	child_process(char **av, char **envp, int *end)
@@ -71,10 +118,8 @@ int	main(int ac, char **av, char **envp)
 	int		end[2];
 	pid_t	pid1;
 
-	write(1, "joe", 3);
 	if (!*envp)
 		return (0);
-	printf("Kom ik hier?");
 	if (ac == 5)
 	{
 		if (pipe(end) == -1)
@@ -89,15 +134,8 @@ int	main(int ac, char **av, char **envp)
 	}
 	else
 	{
-		ft_putstr_fd("Not correct number of arguments\n", 2);
+		//ft_putstr_fd("Not correct number of arguments\n", 2);
 		return (EXIT_FAILURE);
 	}
 	return (0);
 }
-
-// https://www.youtube.com/watch?v=6xbLgZpOBi8
-// https://github.com/gabcollet/pipex/blob/master/srcs/pipex.c
-// https://github.com/gabcollet/pipex/tree/master/srcs
-// https://github.com/mcombeau/pipex
-// https://www.codequoi.com/en/pipex-reproducing-the-pipe-operator-in-c/
-// https://csnotes.medium.com/pipex-tutorial-42-project-4469f5dd5901
