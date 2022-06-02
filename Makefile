@@ -4,7 +4,7 @@ CC = gcc
 CFLAGS = -Wall -Werror -Wextra
 RM = rm -f
 
-FILES = pipex.c libftutils.c
+FILES = pipex.c libftutils.c libftutils2.c utils.c
 
 OBJS = $(FILES:.c=.o)
 
