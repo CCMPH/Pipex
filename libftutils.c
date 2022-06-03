@@ -6,13 +6,13 @@
 /*   By: chartema <chartema@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/06/02 09:01:08 by chartema      #+#    #+#                 */
-/*   Updated: 2022/06/02 09:09:48 by chartema      ########   odam.nl         */
+/*   Updated: 2022/06/03 09:22:40 by chartema      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
-#include <stdlib.h> //nodig voor free
-#include <stddef.h> //nodig voor size_t
+#include <stdlib.h>
+#include <stddef.h>
 
 static int	count_words(char const *s, char c)
 {

@@ -6,14 +6,14 @@
 /*   By: chartema <chartema@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/06/02 09:00:22 by chartema      #+#    #+#                 */
-/*   Updated: 2022/06/02 09:10:02 by chartema      ########   odam.nl         */
+/*   Updated: 2022/06/03 09:22:47 by chartema      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
-#include <stdlib.h> //nodig voor free
-#include <stddef.h> //nodig voor size_t
-#include <unistd.h> //nodig voor write
+#include <stdlib.h>
+#include <stddef.h>
+#include <unistd.h>
 
 void	ft_putstr_fd(char *s, int fd)
 {
@@ -27,6 +27,22 @@ void	ft_putstr_fd(char *s, int fd)
 		write(fd, &s[i], 1);
 		i++;
 	}
+}
+
+char	*ft_strchr(const char *s, int c)
+{
+	char	*str;
+
+	str = (char *)s;
+	while (*str != (unsigned char)c)
+	{
+		if (*str == '\0')
+		{
+			return (NULL);
+		}
+		str++;
+	}
+	return (str);
 }
 
 int	ft_strlen(const char *s)

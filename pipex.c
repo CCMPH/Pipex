@@ -6,17 +6,17 @@
 /*   By: chartema <chartema@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/05/04 13:30:31 by chartema      #+#    #+#                 */
-/*   Updated: 2022/06/02 14:06:51 by chartema      ########   odam.nl         */
+/*   Updated: 2022/06/03 09:22:35 by chartema      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
-#include <fcntl.h> // nodig voor open
-#include <stdlib.h> //nodig voor malloc
-#include <stdio.h> //nodig voor printf en perror
-#include <unistd.h> //nodig voor pipe
-#include <sys/types.h> //nodig voor waitpid
-#include <sys/wait.h> //nodig voor waitpid
+#include <fcntl.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 void	child_process(char **av, char **envp, int *end)
 {

@@ -6,14 +6,21 @@
 /*   By: chartema <chartema@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/06/02 08:43:39 by chartema      #+#    #+#                 */
-/*   Updated: 2022/06/02 14:05:25 by chartema      ########   odam.nl         */
+/*   Updated: 2022/06/03 09:22:14 by chartema      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
-#include <stdlib.h> //nodig voor exit
-#include <unistd.h> //nodig voor access
-#include <stdio.h> //nodig voor perror
+#include <stdlib.h>
+#include <unistd.h>
+#include <stdio.h>
+
+void	ft_error_wrong_cmd(char **cmd)
+{
+	ft_putstr_fd(cmd[0], 2);
+	ft_putstr_fd(": command not found\n", 2);
+	exit(127);
+}
 
 int	ft_error(int errno)
 {
@@ -79,15 +86,8 @@ void	execute_cmd(char *av, char **envp)
 	cmd = ft_split(av, ' ');
 	path = find_path(cmd[0], envp);
 	if (!path)
-	{
-		while (cmd[i])
-		{
-			free(cmd[i]);
-			i++;
-		}
-		free(cmd);
-		ft_error(127);
-	}
+		ft_error_wrong_cmd(cmd);
 	if (execve(path, cmd, envp) == -1)
 		ft_error(0);
+	free(path);
 }
